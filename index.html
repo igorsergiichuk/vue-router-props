@@ -1,0 +1,132 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Vue Props</title>
+</head>
+
+<body>
+  <!-- Mounting poing for the Vue app -->
+  <div id="app"></div>
+</body>
+
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+<script type="text/javascript">
+
+Vue.use(VueRouter)
+
+// Component recieves no props
+
+const TheFirstSimpleComponent = {
+  name: 'TheFirstSimpleComponent',
+  template: 
+    `<div>
+        <h2>Are there any props passed? - {{ prop }}!</h2>
+    </div>`,
+    props: {
+    prop: {
+      type: String,
+      default: 'no'
+    }
+  }
+}
+
+// Component recieves a props passed thought route.params.
+// There are 2 ways of accesing them: 1) thought prop; 2) calling $route.params
+
+const TheSecondSimpleComponent = {
+  name: 'TheSecondSimpleComponent',
+  template: 
+    `<div>
+        <h2>Are there any props passed? - {{ prop }}!</h2>
+        <p>The props are also accesible inside $route.params Object</p>
+        <p>$route.params.prop === {{ $route.params.prop }}</p>
+    </div>`,
+  props: {
+    prop: {
+      type: String,
+      default: 'no'
+    }
+  }
+}
+
+// Component recieves static props
+
+const TheThirdSimpleComponent = {
+  name: 'TheThirdSimpleComponent',
+  template: 
+    `<div>
+        <h2>Are there any props passed? - {{ prop }}!</h2>
+    </div>`,
+  props: {
+    prop: {
+      type: String,
+      default: 'no'
+    }
+  }
+}
+
+// Component recieves dynamic prop
+
+const TheFourthSimpleComponent = {
+  name: 'TheFourthSimpleComponent',
+  template: 
+    `<div>
+        <h2>The value of the passed prop is - {{ prop }} </h2>
+    </div>`,
+  props: {
+    prop: {
+      type: String,
+    }
+  }
+}
+
+// Component passing data using attrs
+
+const TheAttrs = {
+  name: 'Attrs',
+  template: 
+    `<div>
+        <h2>The attributes are {{ $attrs }}</h2>
+    </div>`
+}
+
+const router = new VueRouter({
+  mode: 'history',
+  base: "/",
+  routes: [
+    { path: '/', component: TheFirstSimpleComponent },
+    { path: '/second/:prop', component: TheSecondSimpleComponent, props: true },
+    { path: '/static', component: TheThirdSimpleComponent, props: { prop: 'yes' }},
+    { path: '/dynamic/:prop', component: TheFourthSimpleComponent, props: yesNoPropsFn },
+    { path: '/attrs', component: TheAttrs }
+  ]
+})
+
+function yesNoPropsFn (route) {
+  return {
+    prop: route.params.prop === 'yes' ? 'yes' : 'no'
+  } 
+}
+
+new Vue({
+  router,
+  template: `
+    <div id="app">
+      <h1>Route props</h1>
+      <ol>
+        <li><router-link to="/">/</router-link></li>
+        <li><router-link to="/second/yes">/second/yes</router-link></li>
+        <li><router-link to="/static">/static</router-link></li>
+        <li><router-link to="/dynamic/yes">/dynamic/yes</router-link></li>
+        <li><router-link to="/attrs">/attrs</router-link></li>
+      </ul>
+      <router-view class="router-link" data="123"></router-view>
+    </div>
+  `
+}).$mount('#app')
+</script>
+
+</html>
